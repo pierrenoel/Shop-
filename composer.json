@@ -1,0 +1,17 @@
+{
+    "name": "cariboo/shoppy",
+    "description": "A eShop for a client",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pierre"
+        }
+    ],
+    "require": {
+        "php-di/php-di": "^7.0"
+    }
+}
