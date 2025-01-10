@@ -12,7 +12,9 @@ use app\controllers\HomeController;
 $router = new Router();
 
 $router->addRoute("GET","/",HomeController::class,"index");
-$router->addRoute("GET","/home",HomeController::class,"home");
+
+$router->addRoute("GET","/post/{Post}",HomeController::class,"show");
+
 $router->addRoute("GET","/post/add",HomeController::class,"create");
 $router->addRoute("POST","/post/add",HomeController::class,"store");
 

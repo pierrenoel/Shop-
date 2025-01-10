@@ -15,19 +15,23 @@ class HomeController extends Controller
         return $this->view("home",["posts" => $posts]);
     }
 
+    public function show(Post $post)
+    {
+        return $this->view("posts/show");
+    }
+
     public function create()
     {
-        return $this->view("post/create");
+        return $this->view("posts/create");
     }
 
     public function store(Post $post, Request $request)
     {
-        $title = $request->get()["title"];
-        $content = $request->get()["content"];
-
+        
+        // A retravailler car ici ce n'est pas correct la façon dont on crée un article
         $post->add([
-            "title" => $title,
-            "content" => $content
+            "title" => $request->get()["title"],
+            "content" =>  $request->get()["content"]
         ]);
       
     }

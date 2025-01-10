@@ -14,11 +14,35 @@ class Router
     public function dispatch(string $requestMethod, string $requestUri, $container)
     {
         foreach ($this->routes as $route) {
-            if ($route['method'] === $requestMethod && $route['path'] === $requestUri) {
-                return $this->handleRoute($route, $container);
+            $currentRoute = explode("/", $route["path"]);
+            $arrayRequestUri = explode("/", $requestUri);
+            $params = [];
+
+            if ($route['method'] === $requestMethod && count($currentRoute) === count($arrayRequestUri)) {
+                $isMatch = true;
+                foreach ($currentRoute as $index => $cr) {
+                    if (!isset($arrayRequestUri[$index])) {
+                        $isMatch = false;
+                        break;
+                    }
+    
+                    if (preg_match('/^\{[a-zA-Z]+\}$/', $cr)) {
+                        $paramName = trim($cr, '{}');
+                        $params[$paramName] = $arrayRequestUri[$index];
+                    } elseif ($cr !== $arrayRequestUri[$index]) {
+                        $isMatch = false;
+                        break;
+                    }
+                }
+    
+                if ($isMatch) {
+                    $route['params'] = $params;
+                    return $this->handleRoute($route, $container);
+                }
             }
         }
-
+    
+        // Si aucune route n'est trouvée, renvoie 404
         http_response_code(404);
         echo "404 Not Found";
     }
@@ -27,6 +51,7 @@ class Router
     {
         $controller = $container->get($route['controller']);
         $action = $route['action'];
+        $paramsFromUrl[] = $route['params'];  
 
         if (!method_exists($controller, $action)) {
             throw new \Exception("Method $action not found in controller " . $route['controller']);
